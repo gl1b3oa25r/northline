@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Person details</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'DM Sans', sans-serif;
+      background: #05070b;
+      color: #fff;
+    }
+    .page {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
+    }
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+    .toolbar a {
+      color: rgba(255, 255, 255, 0.82);
+      text-decoration: none;
+    }
+    .card {
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      margin-bottom: 18px;
+    }
+    .photo-wrap {
+      overflow: hidden;
+      border-radius: 16px;
+      background: #111;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+    .photo-wrap img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    h1, h2, p { margin-top: 0; }
+    .kv { display: grid; gap: 12px; }
+    .row {
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: #0f1218;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.92rem;
+      color: rgba(255, 255, 255, 0.64);
+    }
+    .value { word-break: break-word; line-height: 1.8; }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 16px;
+      border-radius: 999px;
+      border: none;
+      text-decoration: none;
+      font-family: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-primary { background: #22c55e; color: #020617; }
+    .btn-secondary { background: #1e293b; color: #fff; border: 1px solid rgba(255,255,255,0.12); }
+    .btn-danger { background: rgba(249,115,115,0.2); color: #fecaca; }
+    .btn:disabled { opacity: 0.5; cursor: wait; }
+    .status-badge {
+      display: inline-flex;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+    .status-both { background: rgba(34,197,94,0.18); color: #86efac; }
+    .status-selfie { background: rgba(59,130,246,0.18); color: #93c5fd; }
+    .status-gps { background: rgba(251,191,36,0.18); color: #fde68a; }
+    .status-unknown { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7); }
+    .empty { text-align: center; color: rgba(255, 255, 255, 0.72); }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="toolbar">
+      <a href="panel.html">Back to panel</a>
+      <span id="recordMeta"></span>
+    </div>
+
+    <div id="content" hidden>
+      <section class="card">
+        <h1>Photo</h1>
+        <div class="photo-wrap">
+          <img id="photo" alt="Uploaded photo" />
+        </div>
+        <div class="actions">
+          <a id="openPhotoBtn" class="btn btn-primary" href="#" target="_blank" rel="noopener noreferrer">Open photo</a>
+          <a id="openMapBtn" class="btn btn-secondary" href="#" target="_blank" rel="noopener noreferrer" hidden>Open map</a>
+          <button id="deleteBtn" class="btn btn-danger" type="button">Delete</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Status</h2>
+        <div class="kv">
+          <div class="row">
+            <span class="label">Capture status</span>
+            <div id="statusValue" class="value"></div>
+          </div>
+          <div class="row">
+            <span class="label">Video played</span>
+            <div id="videoValue" class="value"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>GPS &amp; device</h2>
+        <div class="kv">
+          <div class="row">
+            <span class="label">GPS</span>
+            <div id="gpsValue" class="value"></div>
+          </div>
+          <div class="row">
+            <span class="label">Google Maps</span>
+            <div id="mapValue" class="value"></div>
+          </div>
+          <div class="row">
+            <span class="label">User-Agent</span>
+            <div id="uaValue" class="value"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section id="notFound" class="card empty" hidden>
+      <p>No record found for this person.</p>
+      <a href="panel.html">Back to panel</a>
+    </section>
+  </main>
+
+  <script src="panel-config.js?v=fix1"></script>
+  <script src="response-detail.js?v=fix1"></script>
+</body>
+</html>

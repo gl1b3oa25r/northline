@@ -1,0 +1,43 @@
+# Sync Cloudinary IMAGE folder into photos.json
+name: Sync photos
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/sync-photos.yml'
+      - 'scripts/sync-photos.mjs'
+
+concurrency:
+  group: sync-photos
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Sync from Cloudinary
+        env:
+          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+        run: |
+          git config user.name "gl1b3oa25r"
+          git config user.email "gl1b3oa25r@users.noreply.github.com"
+          git pull --rebase origin main
+          node scripts/sync-photos.mjs
+          git add photos.json
+          if git diff --staged --quiet; then
+            echo "No changes"
+          else
+            git commit -m "Sync photos"
+            git push origin HEAD:main
+          fi

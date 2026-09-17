@@ -1,0 +1,43 @@
+# Short link queue processor
+name: Process shorts
+
+on:
+  schedule:
+    - cron: '* * * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/process-shorts.yml'
+      - 'scripts/process-shorts.mjs'
+
+concurrency:
+  group: process-shorts
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  shorten:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Process short requests
+        env:
+          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+        run: |
+          git config user.name "gl1b3oa25r"
+          git config user.email "gl1b3oa25r@users.noreply.github.com"
+          git pull --rebase origin main
+          node scripts/process-shorts.mjs
+          git add shorts.json
+          if git diff --staged --quiet; then
+            echo "No changes"
+          else
+            git commit -m "Update short links"
+            git push origin HEAD:main
+          fi

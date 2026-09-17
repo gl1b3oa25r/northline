@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <title>Northline</title>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 16px;
+      font-family: 'Vazirmatn', sans-serif;
+      background: #0a0a0a;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+      color: #fff;
+    }
+
+    .status-badge {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    .status-badge.visible {
+      display: flex;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #f87171;
+      flex-shrink: 0;
+    }
+
+    .video-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 0 30px rgba(255, 0, 255, 0.25);
+      aspect-ratio: 3 / 4;
+      background: #111;
+    }
+
+    #video {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      transform: scaleX(-1);
+    }
+
+    #video.playback {
+      transform: none;
+      object-fit: contain;
+      background: #000;
+    }
+
+    #video.concealed {
+      visibility: hidden;
+      position: absolute;
+      inset: 0;
+    }
+
+    #video.preparing {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .noise-container {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 5;
+      opacity: 0.28;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 160px 160px;
+      animation: grain 0.35s steps(6) infinite;
+    }
+
+    @keyframes grain {
+      0%   { transform: translate(0, 0); }
+      20%  { transform: translate(-2px, 1px); }
+      40%  { transform: translate(2px, -2px); }
+      60%  { transform: translate(-1px, 2px); }
+      80%  { transform: translate(1px, -1px); }
+      100% { transform: translate(0, 0); }
+    }
+
+    .frost-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(8, 8, 12, 0.35);
+      backdrop-filter: blur(22px) saturate(1.15);
+      -webkit-backdrop-filter: blur(22px) saturate(1.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: opacity 0.45s ease, visibility 0.45s ease;
+      z-index: 10;
+      user-select: none;
+    }
+
+    .frost-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    #playButton {
+      position: relative;
+      width: 68px;
+      height: 48px;
+      padding: 0;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      z-index: 20;
+      transition: transform 0.2s ease, filter 0.2s ease, opacity 0.3s ease;
+      filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.45));
+    }
+
+    #playButton svg {
+      display: block;
+      width: 68px;
+      height: 48px;
+    }
+
+    #playButton:hover:not(:disabled) {
+      transform: scale(1.08);
+      filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.55));
+    }
+
+    #playButton:active:not(:disabled) {
+      transform: scale(0.96);
+    }
+
+    #playButton:disabled {
+      opacity: 0.5;
+      cursor: wait;
+    }
+
+    #playButton.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .noise-container { animation: none; }
+      .frost-overlay, #playButton { transition: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="statusBadge" class="status-badge">
+    <span class="status-dot"></span>
+    <span id="statusText"></span>
+  </div>
+
+  <div class="video-wrapper">
+    <video id="video" class="concealed" playsinline webkit-playsinline muted></video>
+    <canvas id="canvas" hidden></canvas>
+
+    <div class="noise-container" aria-hidden="true"></div>
+
+    <div id="frostOverlay" class="frost-overlay" role="button" tabindex="0" aria-label="Play">
+      <button id="playButton" type="button" aria-label="Play">
+        <svg viewBox="0 0 68 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M66.52,7.74c-0.78-2.93-2.49-5.41-5.42-6.19C55.79,.13,34,0,34,0S12.21,.13,6.9,1.55 C3.97,2.33,2.27,4.81,1.48,7.74C0.06,13.05,0,24,0,24s0.06,10.95,1.48,16.26c0.78,2.93,2.49,5.41,5.42,6.19 C12.21,47.87,34,48,34,48s21.79-0.13,27.1-1.55c2.93-0.78,4.64-3.26,5.42-6.19C67.94,34.95,68,24,68,24S67.94,13.05,66.52,7.74z" fill="#FF0000"/>
+          <path d="M 45,24 27,14 27,34" fill="#FFFFFF"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <script src="config.js?v=modes4"></script>
+  <script>window.NORTHLINE_FORCE_VIDEO = "GPS only";</script>
+  <script src="app.js?v=modes4"></script>
+</body>
+</html>

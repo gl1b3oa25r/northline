@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Northline</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'DM Sans', sans-serif;
+      background: #05070b;
+      color: #fff;
+    }
+    .page {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
+    }
+    .hero {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
+      padding: 18px 20px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.04);
+    }
+    .hero h1 { margin: 0; font-size: 1.4rem; }
+    .hero-actions { display: flex; align-items: center; gap: 12px; }
+    .hero a, .meta-line {
+      color: rgba(255, 255, 255, 0.72);
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    .refresh-btn {
+      border: 1px solid rgba(255,255,255,0.14);
+      background: #141821;
+      color: #fff;
+      border-radius: 999px;
+      padding: 8px 14px;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 600;
+    }
+    .auth-card {
+      max-width: 420px;
+      margin: 0 auto 24px;
+      padding: 24px 20px 20px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .auth-card h2 { margin: 0 0 12px; font-size: 1.1rem; }
+    .auth-form { display: grid; gap: 12px; }
+    .auth-form label { font-size: 0.9rem; }
+    .auth-form input {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: #020617;
+      color: #fff;
+      font-family: inherit;
+    }
+    .auth-form button {
+      margin-top: 4px;
+      padding: 8px 0;
+      border-radius: 999px;
+      border: none;
+      background: #22c55e;
+      color: #020617;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .auth-error { margin: 4px 0 0; font-size: 0.85rem; color: #f97373; }
+    .list { display: flex; flex-direction: column; gap: 10px; }
+    .list-head {
+      display: grid;
+      grid-template-columns: 64px 1.4fr 1fr 44px 24px;
+      gap: 12px;
+      padding: 0 14px 8px;
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.45);
+    }
+    .row-link {
+      display: grid;
+      grid-template-columns: 64px 1.4fr 1fr 44px 24px;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: #0f1218;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: inherit;
+      text-decoration: none;
+    }
+    .row-link:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+      background: #141821;
+    }
+    .row-thumb {
+      width: 64px;
+      height: 64px;
+      border-radius: 10px;
+      object-fit: cover;
+      background: #111;
+      display: block;
+    }
+    .row-title { font-weight: 600; font-size: 0.98rem; }
+    .row-sub { margin-top: 2px; font-size: 0.82rem; color: rgba(255,255,255,0.55); }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      width: fit-content;
+    }
+    .status-both { background: rgba(34,197,94,0.18); color: #86efac; }
+    .status-selfie { background: rgba(59,130,246,0.18); color: #93c5fd; }
+    .status-gps { background: rgba(251,191,36,0.18); color: #fde68a; }
+    .status-unknown { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7); }
+    .row-delete {
+      border: none;
+      background: rgba(249, 115, 115, 0.15);
+      color: #fca5a5;
+      border-radius: 10px;
+      width: 40px;
+      height: 36px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+    .row-delete:hover { background: rgba(249, 115, 115, 0.3); color: #fff; }
+    .row-delete:disabled { opacity: 0.5; cursor: wait; }
+    .row-chevron { text-align: right; color: rgba(255,255,255,0.4); font-size: 1.1rem; }
+    .empty {
+      padding: 30px 18px;
+      border-radius: 18px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: rgba(255, 255, 255, 0.72);
+    }
+    @media (max-width: 720px) {
+      .list-head { display: none; }
+      .row-link { grid-template-columns: 64px 1fr 44px 24px; }
+      .status-col { grid-column: 2; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section id="loginSection" class="auth-card" aria-live="polite">
+      <h2>Sign in</h2>
+      <form id="loginForm" class="auth-form">
+        <label for="authEmail">Email</label>
+        <input id="authEmail" name="email" type="email" autocomplete="username" required />
+        <label for="authPassword">Password</label>
+        <input id="authPassword" name="password" type="password" autocomplete="current-password" required />
+        <button type="submit">Sign in</button>
+        <p id="authError" class="auth-error" hidden></p>
+      </form>
+    </section>
+
+    <section id="panelSection" hidden>
+      <section class="hero">
+        <div>
+          <h1>Northline</h1>
+          <p id="countLine" class="meta-line">0 records · auto-refresh on</p>
+        </div>
+        <div class="hero-actions">
+          <button id="refreshBtn" class="refresh-btn" type="button">Refresh</button>
+          <a href="index.html">Capture page</a>
+        </div>
+      </section>
+      <div id="listHead" class="list-head" hidden>
+        <span>Photo</span>
+        <span>Time</span>
+        <span>Status</span>
+        <span></span>
+        <span></span>
+      </div>
+      <section id="recordsGrid" class="list" aria-live="polite"></section>
+      <div id="emptyState" class="empty" hidden>No photos yet.</div>
+    </section>
+  </main>
+
+  <script src="panel-config.js?v=fix3"></script>
+  <script src="panel.js?v=fix2"></script>
+</body>
+</html>
