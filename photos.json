@@ -1,5 +1,18 @@
 {
-  "updatedAt": "2026-09-17T10:56:33.585Z",
-  "count": 0,
-  "records": []
+  "updatedAt": "2026-09-17T11:12:55.902Z",
+  "count": 1,
+  "records": [
+    {
+      "id": "ccc646f347fb7ce29ecf929463fe301e",
+      "photoUrl": "https://res.cloudinary.com/pch2kkcx/image/upload/v1789642798/IMAGE/iuicwk4seivbxafbyjjz.jpg",
+      "publicId": "IMAGE/iuicwk4seivbxafbyjjz",
+      "uploadedAt": "2026-09-17T10:59:58Z",
+      "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/30.0 Chrome/143.0.0.0 Mobile Safari/537.36",
+      "latitude": 36.2869837,
+      "longitude": 59.5976517,
+      "status": "GPS only",
+      "videoPlayed": "GPS only",
+      "source": "cloudinary"
+    }
+  ]
 }
